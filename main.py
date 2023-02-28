@@ -15,8 +15,12 @@ print(f"RouterOS version: {version}")
 interfaces = api.get_resource('/interface')
 print("\nInterfaces:")
 for interface in interfaces.get():
-    print(interface)
-    #print(f"Name: {interface['name']}, MAC address: {interface['mac-address']}")#, IP address: {interface['address']}
+    print(f"Name: {interface['name']}")
+    if 'mac-address' in interface:
+        print(f"MAC address: {interface['mac-address']}")
+    else:
+        print("None")
+    #, )#, IP address: {interface['address']}
 
 # Obtener información de la configuración de la red
 ip_addresses = api.get_resource('/ip/address')
