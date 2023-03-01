@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import routeros_api
 
-#ros = Ros("https://192.168.88.1/", "admin", "")
 connection = routeros_api.RouterOsApiPool('152.206.118.189', username='admin', password='112233' ,plaintext_login=True)
 api = connection.get_api()
 # Obtener información de la versión del router
@@ -12,14 +11,12 @@ print(f"RouterOS version: {version}")
 # Obtener información de la configuración de la interfaz
 interfaces = api.get_resource('/interface')
 print("\nInterfaces:")
-print(interfaces.get())
 for interface in interfaces.get():
-    print(f"Name: {interface['name']}")
+    print(f"Name: {interface['name']}, Download: {round(int(interface['tx-byte'])/1024/1024)}MB , Upload: {round(int(interface['rx-byte'])/1024/1024)}MB")
     if 'mac-address' in interface:
         print(f"MAC address: {interface['mac-address']}")
     else:
         print("None")
-    #, )#, IP address: {interface['address']}
 
 # Obtener información de la configuración de la red
 ip_addresses = api.get_resource('/ip/address')
@@ -35,6 +32,8 @@ for route in routes.get():
         print(f"Gateway: {route['gateway']}, Inactive:{route['inactive']}, Active:{route['active']}")#, Interface: {route['interface']}")
     elif 'via' in route:
         print(f"Destination: {route['dst-address']}, Gateway: {route['gateway']} , Inactive:{route['inactive']}, Active:{route['active']})#, Interface: {route['interface']}")
+    elif 'connect' in route:
+        print(f"Destination: {route['dst-address']}, Inactive:{route['inactive']}, Active:{route['active']} , Connect:{route['connect']}")  # , Interface: {route['interface']}")
     else:
         print(f"Destination: {route['dst-address']}, Inactive:{route['inactive']}, Active:{route['active']}")#, Interface: {route['interface']}")
 
@@ -74,13 +73,5 @@ for user in users.get():
         if group['name'] in user['group']:
             groups_string += f"{group['name']} "
     print(f"Name: {user['name']}, Groups: {groups_string.strip()}")
-#ping = api.get_binary_resource('/').call('ping', { 'address': 'google.com', 'count': '4' })
-#route = api.get_resource('/ip/route')
-#interface = api.get_resource('/interface')
-#interfaceinfo = interface.get()
-#print(interfaceinfo)
-#routeinfo = route.get()
-#print(routeinfo)
-#for i in ping:
-    #print(i)
+
     
