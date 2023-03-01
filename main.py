@@ -1,6 +1,4 @@
 #!/usr/bin/python
-#from librouteros import connect
-#from ros import Ros
 import routeros_api
 
 #ros = Ros("https://192.168.88.1/", "admin", "")
@@ -14,6 +12,7 @@ print(f"RouterOS version: {version}")
 # Obtener información de la configuración de la interfaz
 interfaces = api.get_resource('/interface')
 print("\nInterfaces:")
+print(interfaces.get())
 for interface in interfaces.get():
     print(f"Name: {interface['name']}")
     if 'mac-address' in interface:
@@ -32,35 +31,37 @@ for ip_address in ip_addresses.get():
 routes = api.get_resource('/ip/route')
 print("\nRoutes:")
 for route in routes.get():
-    print(route)
-    '''
-    if route['dst-address'] == '0.0.0.0/0':
-        print(f"Gateway: {route['gateway']}, Interface: {route['interface']}")
+    if route['dst-address'] == '0.0.0.0/0': 
+        print(f"Gateway: {route['gateway']}, Inactive:{route['inactive']}, Active:{route['active']}")#, Interface: {route['interface']}")
     elif 'via' in route:
-        print(f"Destination: {route['dst-address']}, Gateway: {route['gateway']}, Interface: {route['interface']}")
+        print(f"Destination: {route['dst-address']}, Gateway: {route['gateway']} , Inactive:{route['inactive']}, Active:{route['active']})#, Interface: {route['interface']}")
     else:
-        print(f"Destination: {route['dst-address']}, Interface: {route['interface']}")
-    '''
+        print(f"Destination: {route['dst-address']}, Inactive:{route['inactive']}, Active:{route['active']}")#, Interface: {route['interface']}")
 
 # Obtener información de las reglas de firewall
 firewall_rules = api.get_resource('/ip/firewall/filter')
-print("\nFirewall rules:")
-for rule in firewall_rules.get():
-    print(rule)
-    #print(f"Chain: {rule['chain']}, Protocol: {rule['protocol']}, Source address: {rule['src-address']}, Destination address: {rule['dst-address']}")
+if firewall_rules.get() == []:
+    print("\nFirewall rules: None")
+else:
+    print("\nFirewall rules:")
+    for rule in firewall_rules.get():
+        print(f"Chain: {rule['chain']}, Protocol: {rule['protocol']}, Source address: {rule['src-address']}, Destination address: {rule['dst-address']}")
 
 # Obtener información de las colas de tráfico
 queues = api.get_resource('/queue/simple')
 print("\nTraffic queues:")
 for queue in queues.get():
-    print(queue)
-    #print(f"Name: {queue['name']}, Target address: {queue['target-addresses']}, Max limit: {queue['max-limit']}")
+    #print(queue)
+    print(f"Name: {queue['name']}, Target address: {queue['target']}, Max limit: {queue['max-limit']}")
 
 # Obtener información de los clientes PPPoE
 pppoe_clients = api.get_resource('/ppp/active')
-print("\nPPPoE clients:")
-for client in pppoe_clients.get():
-    print(client)
+if pppoe_clients.get() == []:
+    print("\nPPPoE clients: None")
+else:
+    print("\nPPPoE clients:")
+    for client in pppoe_clients.get():
+        print(client)
     #print(f"Name: {client['name']}, Address: {client['address']}, Uptime: {client['uptime']}")
 
 # Obtener información de los usuarios y grupos de usuarios
