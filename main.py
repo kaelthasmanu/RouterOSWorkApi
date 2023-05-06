@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import routeros_api
 
-connection = routeros_api.RouterOsApiPool('152.206.118.189', username='admin', password='112233' ,plaintext_login=True)
+connection = routeros_api.RouterOsApiPool('IP', username='admin', password='superpassword' ,plaintext_login=True)
 api = connection.get_api()
 # Obtener información de la versión del router
 system_resource = api.get_resource('/system/resource')
